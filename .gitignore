@@ -1,0 +1,8 @@
+#Maven Build specific
+target/
+
+#netbeans specific
+nbactions.xml
+
+#java specific
+*.class
