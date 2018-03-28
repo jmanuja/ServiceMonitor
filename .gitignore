@@ -3,6 +3,7 @@ target/
 
 #netbeans specific
 nbactions.xml
+nb-configuration.xml
 
 #java specific
 *.class
