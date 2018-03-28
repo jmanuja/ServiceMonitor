@@ -1,4 +1,4 @@
-package com.interview.servicemonitor.enums;
+package com.servicemonitor.enums;
 
 /**
  * @author manuja
@@ -10,7 +10,8 @@ public enum StatusEnum {
     UP(1,"Server is Up"),
     DOWN(2,"Server is Down"),
     OUTAGE(3,"Server is on Outage Timer"),
-    TERMINATED(4,"Server is Terminated");
+    TERMINATED(4,"Server is Terminated"),
+    INITIALIZE(5,"Server is Initialized");
     
     private int id ;
     private String status;

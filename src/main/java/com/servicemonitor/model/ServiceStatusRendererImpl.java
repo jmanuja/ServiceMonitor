@@ -1,8 +1,8 @@
 
-package com.interview.servicemonitor.model;
+package com.servicemonitor.model;
 
-import com.interview.servicemonitor.config.Service;
-import com.interview.servicemonitor.enums.StatusEnum;
+import com.servicemonitor.enums.StatusEnum;
+import com.servicemonitor.bean.MonitorService;
 import java.awt.Component;
 import java.awt.Image;
 import java.text.SimpleDateFormat;
@@ -15,11 +15,11 @@ import javax.swing.ListCellRenderer;
 * @author manuja
 * This Will Render the Service List According to Service Model      *
 */  
-public class ServiceStatusRenderer extends JLabel implements ListCellRenderer<Service>  {
+public class ServiceStatusRendererImpl extends JLabel implements ListCellRenderer<MonitorService>  {
     ImageIcon imageIcon;
     SimpleDateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
 
-    public ServiceStatusRenderer() {
+    public ServiceStatusRendererImpl() {
         setOpaque(true);
     }
     
@@ -27,27 +27,27 @@ public class ServiceStatusRenderer extends JLabel implements ListCellRenderer<Se
     * Render the list Style by its event      *
     */ 
     @Override
-    public Component getListCellRendererComponent(JList<? extends Service> list, Service serviceModel, int index, boolean isSelected, boolean cellHasFocus) {
+    public Component getListCellRendererComponent(JList<? extends MonitorService> list, MonitorService serviceModel, int index, boolean isSelected, boolean cellHasFocus) {
         String name = serviceModel.getServiceName();
         String date = serviceModel.getLastSyncTime()!=null?" ( " +dateFormatter.format(serviceModel.getLastSyncTime()) + " ) ":"";
         
-        if(serviceModel.getStatus() == StatusEnum.UP.getId()){
+        if(serviceModel.getServiceStatus() == StatusEnum.UP.getId()){
             imageIcon = new ImageIcon( getClass().getResource("/images/online.png"));
             Image image = imageIcon.getImage(); 
             Image newimg = image.getScaledInstance(40, 40,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
             imageIcon = new ImageIcon(newimg);  
-        } if(serviceModel.getStatus() == StatusEnum.DOWN.getId()){
+        } if(serviceModel.getServiceStatus() == StatusEnum.DOWN.getId()){
             imageIcon = new ImageIcon( getClass().getResource("/images/offline.png"));
             Image image = imageIcon.getImage(); 
             Image newimg = image.getScaledInstance(40, 40,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
             imageIcon = new ImageIcon(newimg);  
-        }else if(serviceModel.getStatus() == StatusEnum.TERMINATED.getId()){
+        }else if(serviceModel.getServiceStatus() == StatusEnum.TERMINATED.getId()){
             imageIcon = new ImageIcon( getClass().getResource("/images/terminated.jpg"));
             Image image = imageIcon.getImage(); 
             Image newimg = image.getScaledInstance(40, 40,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
             imageIcon = new ImageIcon(newimg);  
         }
-        else if(serviceModel.getStatus() == StatusEnum.OUTAGE.getId()){
+        else if(serviceModel.getServiceStatus() == StatusEnum.OUTAGE.getId()){
             imageIcon = new ImageIcon( getClass().getResource("/images/silence.png"));
             Image image = imageIcon.getImage(); 
             Image newimg = image.getScaledInstance(40, 40,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  

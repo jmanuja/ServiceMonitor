@@ -1,8 +1,9 @@
-package com.interview.servicemonitor.main;
+package com.servicemonitor.ui;
 
-import com.interview.servicemonitor.config.Service;
-import com.interview.servicemonitor.model.ServiceStatusRenderer;
-import com.interview.servicemonitor.service.ServiceCheckSwingWorker;
+import com.servicemonitor.model.ServiceStatusRendererImpl;
+import com.servicemonitor.bean.MonitorService;
+
+import com.servicemonitor.bl.service.impl.ServiceSubscriberWorker;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
@@ -16,8 +17,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -43,13 +44,13 @@ public class MonitorFrame extends JFrame{
     
     SwingWorker swingWorker;
 
-    private DefaultListModel<Service> serviceStatusModel;
-    JList<Service> serviceStatusList;
-    private Map<String,Integer> statusMap = new ConcurrentHashMap<>();    
-    private Map<String,Service> runningServiceMap = new ConcurrentHashMap<>();    
+    private DefaultListModel<MonitorService> serviceStatusModel;
+    JList<MonitorService> serviceStatusList;
+    private Map<String,Integer> statusMap = new HashMap<>();    
+    private Map<String,MonitorService> registerServiceMap = new HashMap<>();    
      
     private JPanel serviceDetailPanel,serviceStatusPanel;
-    private JTextField serviceNameTextField,hostTextField,portTextField,pollingTextField,graceTextField;
+    private JTextField serviceNameTextField;
     private JButton registerButton , terminateButton;
     private JSpinner outageStartSpinner,outageEndSpinner;
     private JScrollPane jScrollPane;
@@ -65,27 +66,19 @@ public class MonitorFrame extends JFrame{
                 SwingUtilities.invokeLater(new Runnable() {
                   public void run() {
                     try {
-                        String host = hostTextField.getText().trim(); 			
-                        int port ="".equals(portTextField.getText().trim())?0: Integer.parseInt(portTextField.getText().trim()); 				
                         String serviceName = serviceNameTextField.getText().trim(); 
                         Date outageStartTime = (Date) outageStartSpinner.getValue();
                         Date outageEndTime = (Date) outageEndSpinner.getValue();
-                        int gracePeriod ="".equals(graceTextField.getText().trim())?1000: Integer.parseInt(graceTextField.getText().trim())*60*1000; 				
-                        int polling ="".equals(pollingTextField.getText().trim())?1000: Integer.parseInt(pollingTextField.getText().trim())*60*1000; 				
-                        if(!"".equals(host) || port !=0 || !"".equals(serviceName)){
-                            if(!runningServiceMap.containsKey(serviceName)){
-                                Service selectedItem = new Service();
-                                selectedItem.setHost(host);
-                                selectedItem.setPort(port);
+                        if( !"".equals(serviceName)){
+                            if(!registerServiceMap.containsKey(serviceName)){
+                                MonitorService selectedItem = new MonitorService();
                                 selectedItem.setServiceName(serviceName);
-                                selectedItem.setPollingFrequency(polling);
                                 if(outageStartTime.compareTo(outageEndTime)!=0 && outageStartTime.before(outageEndTime)){
                                     selectedItem.setOutageStartTime(outageStartTime);
                                     selectedItem.setOutageEndTime(outageEndTime);
                                 }
-                                selectedItem.setGracePeriod(gracePeriod);
-                                runningServiceMap.put(serviceName, selectedItem);
-                                swingWorker = new ServiceCheckSwingWorker(MonitorFrame.this,selectedItem);
+                                registerServiceMap.put(serviceName, selectedItem);
+                                swingWorker = new ServiceSubscriberWorker(MonitorFrame.this,selectedItem);
                                 swingWorker.execute();
                                 clearWindow();
                             }else{
@@ -112,7 +105,7 @@ public class MonitorFrame extends JFrame{
                         String serviceName = serviceNameTextField.getText().trim(); 
                         if( !"".equals(serviceName)){
                             if(checkServiceIsRunning(serviceName)){
-                                runningServiceMap.remove(serviceName);
+                                registerServiceMap.remove(serviceName);
                                 swingWorker.cancel(true);
                                 serviceStatusModel.removeElement(serviceStatusList.getSelectedValue());
                                 statusMap.remove(serviceName);
@@ -139,11 +132,8 @@ public class MonitorFrame extends JFrame{
                 if (e.getClickCount() == 1) {
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
-                            Service service = serviceStatusList.getSelectedValue();
-                            hostTextField.setText(service.getHost()); 			
-                            portTextField.setText(service.getPort()+""); 				
+                            MonitorService service = serviceStatusList.getSelectedValue();			
                             serviceNameTextField.setText(service.getServiceName()); 
-                            pollingTextField.setText(service.getPollingFrequency()/(60*1000)+"");
                             if(service.getOutageStartTime()!=null && service.getOutageEndTime()!=null){
                                 outageStartSpinner.setValue(service.getOutageStartTime());
                                 outageEndSpinner.setValue(service.getOutageEndTime());                                    
@@ -154,7 +144,6 @@ public class MonitorFrame extends JFrame{
                                 outageStartSpinner.setValue(cal.getTime());
                                 outageEndSpinner.setValue(cal.getTime());     
                             }
-                            graceTextField.setText(service.getGracePeriod()/(60*1000)+""); 				
                         }
                     });
                 }
@@ -192,7 +181,7 @@ public class MonitorFrame extends JFrame{
         jScrollPane = new JScrollPane(serviceStatusList);
         jScrollPane.setPreferredSize(new Dimension(340, 340));
         serviceStatusPanel.add(jScrollPane);
-        serviceStatusList.setCellRenderer(new ServiceStatusRenderer());        
+        serviceStatusList.setCellRenderer(new ServiceStatusRendererImpl());        
         
         JLabel title = new JLabel("Service Monitor");
         title.setFont(new Font("Monospace", Font.PLAIN, 22));
@@ -205,29 +194,13 @@ public class MonitorFrame extends JFrame{
 
         JLabel serviceNameLabel = new JLabel("<html> Service Name <font color='red'>( * )</font></html>");
         serviceNameLabel.setPreferredSize(new Dimension(170,20));
-        JLabel hostLabel = new JLabel("<html> Host <font color='red'>( * )</font></html>");
-        hostLabel.setPreferredSize(new Dimension(170,20));
-        JLabel portLabel= new JLabel("<html> Port <font color='red'>( * )</font></html>");
-        portLabel.setPreferredSize(new Dimension(170,20));
-        JLabel pollingLabel= new JLabel("Polling Frequency (Minute)");
-        pollingLabel.setPreferredSize(new Dimension(170,20));        
         JLabel outageStartLabel= new JLabel("Outage Start Time");
         outageStartLabel.setPreferredSize(new Dimension(170,20));
         JLabel outageEndLabel= new JLabel("Outage End Time");
         outageEndLabel.setPreferredSize(new Dimension(170,20));
-        JLabel graceLabel= new JLabel("Grace Period (Minute)");
-        graceLabel.setPreferredSize(new Dimension(170,20));
 
         serviceNameTextField= new JTextField();
         serviceNameTextField.setPreferredSize(new Dimension(150,20));
-        hostTextField = new JTextField();
-        hostTextField.setPreferredSize(new Dimension(150,20));
-        portTextField= new JTextField();
-        portTextField.setPreferredSize(new Dimension(150,20));
-        graceTextField= new JTextField();
-        graceTextField.setPreferredSize(new Dimension(150,20));
-        pollingTextField= new JTextField();
-        pollingTextField.setPreferredSize(new Dimension(150,20));
         outageStartSpinner = new JSpinner( new SpinnerDateModel() );
         JSpinner.DateEditor outageStartEditor = new JSpinner.DateEditor(outageStartSpinner, "HH:mm");
         DateFormatter startFormatter = (DateFormatter)outageStartEditor.getTextField().getFormatter();
@@ -248,18 +221,10 @@ public class MonitorFrame extends JFrame{
         serviceDetailPanel.add(title);
         serviceDetailPanel.add(serviceNameLabel);
         serviceDetailPanel.add(serviceNameTextField);
-        serviceDetailPanel.add(hostLabel);
-        serviceDetailPanel.add(hostTextField);
-        serviceDetailPanel.add(portLabel);
-        serviceDetailPanel.add(portTextField);
-        serviceDetailPanel.add(pollingLabel);
-        serviceDetailPanel.add(pollingTextField);
         serviceDetailPanel.add(outageStartLabel);
         serviceDetailPanel.add(outageStartSpinner);
         serviceDetailPanel.add(outageEndLabel);
         serviceDetailPanel.add(outageEndSpinner);
-        serviceDetailPanel.add(graceLabel);
-        serviceDetailPanel.add(graceTextField);
         
         registerButton = new JButton("Register");
         registerButton.setPreferredSize( new Dimension(100, 30));
@@ -286,7 +251,7 @@ public class MonitorFrame extends JFrame{
     * Use to Add Service Status to interface *
     * @param : runningService Service Object with Current Status 
     */
-    public void showServiceStatus(Service runningService) {
+    public void showServiceStatus(MonitorService runningService) {
         if(checkServiceIsRunning(runningService.getServiceName())){
             if(statusMap.containsKey(runningService.getServiceName().trim())){
                int index= statusMap.get(runningService.getServiceName().trim());
@@ -296,7 +261,6 @@ public class MonitorFrame extends JFrame{
                statusMap.put(runningService.getServiceName().trim(),statusMap.size());
             } 
         }
-
     }
     
    /**
@@ -304,8 +268,8 @@ public class MonitorFrame extends JFrame{
     * @param : serviceName Name of the Service
     * @return : Service 
     */    
-    public Service getServiceByName(String serviceName) {
-        return runningServiceMap.get(serviceName);
+    public MonitorService getServiceByName(String serviceName) {
+        return registerServiceMap.get(serviceName);
     }
 
     /**
@@ -314,22 +278,18 @@ public class MonitorFrame extends JFrame{
     * @return : boolean TRUE if server is running else FALSE
     */    
     public boolean checkServiceIsRunning(String serviceName) {
-        return runningServiceMap.containsKey(serviceName);
+        return registerServiceMap.containsKey(serviceName);
     }
 
     /**
     * Use too Clear the interface    *
     */    
-    public void clearWindow(){
-        hostTextField.setText(""); 			
-        portTextField.setText(""); 				
+    public void clearWindow(){				
         serviceNameTextField.setText(""); 
-        pollingTextField.setText("");
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
         outageStartSpinner.setValue(cal.getTime());
         outageEndSpinner.setValue(cal.getTime());     
-        graceTextField.setText("");        
     }
 }
