@@ -34,7 +34,7 @@ public class ServiceMonitorMain {
                 {   
                     MonitorFrame window = new MonitorFrame();
                     window.setVisible(true);
-                    getInstance().getAllservicer();
+                    getInstance().initServices();
                 }
             });
             
@@ -43,21 +43,11 @@ public class ServiceMonitorMain {
         }
     }
         
-    public void getAllservicer(){
+    public void initServices(){
 	ApplicationContext applicationContext = new ClassPathXmlApplicationContext(CONTEXT_PATH);
         ServicePublisher publisher = (ServicePublisher) applicationContext.getBean("publisher");	
         publisher.startAllServices();
     }
     
-    public void addservicer(){
-      //  runningServiceMap.put(runningServiceMap.size()+1+"", new Service());
-    }
-     
-    public void startAllServices(){
-        try {
-            
-        } catch (Exception e) {
-        }
-    }
 }
 

@@ -56,7 +56,7 @@ public class ServiceSubscriberWorker extends SwingWorker<MonitorService, Monitor
             doInBackground();
         }
         catch(Exception ex){
-                ex.printStackTrace();
+           ex.printStackTrace();
         }
         return registeredService;
     }
