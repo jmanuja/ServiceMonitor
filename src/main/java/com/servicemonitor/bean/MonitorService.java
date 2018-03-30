@@ -26,11 +26,4 @@ public class MonitorService extends Service {
     public void setOutageEndTime(Date outageEndTime) {
         this.outageEndTime = outageEndTime;
     }
-
-   
-
-
-
-    
-    
 }
