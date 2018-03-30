@@ -25,6 +25,7 @@ public class ServiceSubscriberWorker extends SwingWorker<MonitorService, Monitor
     private DefaultListModel<MonitorService> serviceModel;
     private MonitorFrame window ;
     private MonitorService registeredService;
+    private Service service ;
     
     public ServiceSubscriberWorker(MonitorFrame window,MonitorService service)
     {
@@ -36,8 +37,8 @@ public class ServiceSubscriberWorker extends SwingWorker<MonitorService, Monitor
     @Override
     protected MonitorService doInBackground() throws Exception {
         try{
-            while(window.checkServiceIsRunning(registeredService.getServiceName())){
-                Service service = ServiceBroker.getServiceByName(registeredService.getServiceName());
+            while(window.checkServiceIsRunning(registeredService.getServiceName()) && !isCancelled()){
+                service = ServiceBroker.getServiceByName(registeredService.getServiceName());
                 if(service!=null){
                     Integer status = checkIsOnOutageTimer(registeredService);
                     if(status!=null){
@@ -45,11 +46,13 @@ public class ServiceSubscriberWorker extends SwingWorker<MonitorService, Monitor
                     }else{
                         status = service.getServiceStatus();
                     }
-                    
                     registeredService.setServiceStatus(status);
                     publish(registeredService);
                     Thread.sleep(service.getPollingFrequency());
                     System.out.println(registeredService.getServiceName()+" IS "+ status);
+                }else{
+                    window.showMessage("Service Not Found");
+                    cancel(true);
                 }
             }
         } catch (InterruptedException e){
@@ -79,8 +82,10 @@ public class ServiceSubscriberWorker extends SwingWorker<MonitorService, Monitor
     */
     @Override
     protected void done() {
-        registeredService.setServiceStatus(StatusEnum.TERMINATED.getId());
-        window.showServiceStatus(registeredService);
+        if(service!=null){
+            registeredService.setServiceStatus(StatusEnum.TERMINATED.getId());
+            window.showServiceStatus(registeredService);
+        }
     }
 
     @Override

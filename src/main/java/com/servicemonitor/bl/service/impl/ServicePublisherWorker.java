@@ -6,10 +6,8 @@ import com.servicemonitor.bl.service.ServiceConfig;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import javax.swing.DefaultListModel;
 import javax.swing.SwingWorker;
 
 /**
@@ -44,7 +42,7 @@ public class ServicePublisherWorker extends SwingWorker<Service, Service> implem
             doInBackground();
         }
         catch(Exception ex){
-                ex.printStackTrace();
+            ex.printStackTrace();
         }
         return service;
     }
@@ -56,9 +54,7 @@ public class ServicePublisherWorker extends SwingWorker<Service, Service> implem
     @Override
     protected void process(List<Service> chunk) {
         for(Service s:chunk){
-            if(ServiceBroker.isServiceRunning(service.getServiceName().toUpperCase())){
-                ServiceBroker.addToRunningServices(service.getServiceName().toUpperCase(), service);
-            }
+            ServiceBroker.updateServiceStatus(service.getServiceName().toUpperCase(), service);
         }
     }    
     
@@ -68,9 +64,7 @@ public class ServicePublisherWorker extends SwingWorker<Service, Service> implem
     @Override
     protected void done() {
         service.setServiceStatus(StatusEnum.TERMINATED.getId());
-        ServiceBroker.addToRunningServices(service.getServiceName().toUpperCase(), service);
-        System.out.println(service.getServiceName()+" IS Stopped");
-
+        ServiceBroker.updateServiceStatus(service.getServiceName().toUpperCase(), service);
     }
 
     @Override
@@ -94,6 +88,4 @@ public class ServicePublisherWorker extends SwingWorker<Service, Service> implem
         }
         return StatusEnum.DOWN;
     }
-
-    
 }

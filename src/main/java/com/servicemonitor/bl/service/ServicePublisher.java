@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.servicemonitor.bl.service;
 
 import com.servicemonitor.bean.Service;
@@ -14,12 +9,13 @@ import com.servicemonitor.bean.Service;
 public interface ServicePublisher {
     
     /**
-    * Starting all Services
+    * Starting all services
     */
     public void startAllServices();
     
     /**
-    * Starting a Service
+    * Starting the service specified
+    * @param service 
     */
     public void startService(Service service);
     

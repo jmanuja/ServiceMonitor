@@ -19,13 +19,11 @@ public class ServiceBroker {
     public static void addToRunningServices(String key , Service service){
         if(runningServiceList!=null && !runningServiceList.containsKey(key)){
             runningServiceList.put(key, service);
-        }else{
-            
         }
     }
 
     public static void stopService(String key){
-        
+        runningServiceList.remove(key);
     }
     
     public static boolean isServiceRunning(String key){
@@ -41,5 +39,9 @@ public class ServiceBroker {
             return runningServiceList.get(name.toUpperCase());
         }
         return null;
+    }
+    
+    public static void updateServiceStatus(String name,Service status){
+        runningServiceList.put(name.toUpperCase(),status);
     }
 }

@@ -1,6 +1,5 @@
 package com.servicemonitor.bl.service;
 
-import com.servicemonitor.enums.StatusEnum;
 import com.servicemonitor.bean.MonitorService;
 
 /**

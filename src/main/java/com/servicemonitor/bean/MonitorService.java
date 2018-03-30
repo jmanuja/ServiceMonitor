@@ -3,13 +3,13 @@ package com.servicemonitor.bean;
 import java.util.Date;
 
 /**
- *
  * @author manuja
+ * Name : MonitorService Class
+ * To Configuring the monitoring service properties
  */
 public class MonitorService extends Service {
     private Date outageStartTime;
     private Date outageEndTime;
-    private Date lastSyncTime; 				
 
     public Date getOutageStartTime() {
         return outageStartTime;
@@ -27,13 +27,7 @@ public class MonitorService extends Service {
         this.outageEndTime = outageEndTime;
     }
 
-    public Date getLastSyncTime() {
-        return lastSyncTime;
-    }
-
-    public void setLastSyncTime(Date lastSyncTime) {
-        this.lastSyncTime = lastSyncTime;
-    }
+   
 
 
 

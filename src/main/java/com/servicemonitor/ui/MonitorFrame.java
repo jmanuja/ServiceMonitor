@@ -1,6 +1,6 @@
 package com.servicemonitor.ui;
 
-import com.servicemonitor.model.ServiceStatusRendererImpl;
+import com.servicemonitor.bl.service.impl.ServiceStatusRendererImpl;
 import com.servicemonitor.bean.MonitorService;
 
 import com.servicemonitor.bl.service.impl.ServiceSubscriberWorker;

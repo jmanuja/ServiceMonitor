@@ -14,6 +14,7 @@ public class Service{
     private int serviceStatus; 
     private int pollingFrequency; 
     private int gracePeriod; 
+    private Date lastSyncTime; 				
 				
     public String getHost() {
         return host;
@@ -61,5 +62,13 @@ public class Service{
 
     public void setGracePeriod(int gracePeriod) {
         this.gracePeriod = gracePeriod;
+    }
+    
+    public Date getLastSyncTime() {
+        return lastSyncTime;
+    }
+
+    public void setLastSyncTime(Date lastSyncTime) {
+        this.lastSyncTime = lastSyncTime;
     }
 }
