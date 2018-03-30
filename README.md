@@ -14,16 +14,4 @@ IDE : Netbeans IDE
 
 Type of Project : Java Swing 
 
-# How to Excute application using excutable jar
-
-1) Please download the ServiceMonitor.jar file to a directory.
-
-2) Open Command Line from the directory.
-
-3) excute following command
-     
-     java -jar ServiceMonitor.jar
-
-
-
-
+Design Pattern : Publisher - Subscriber Pattern & Solid Principles are used.
