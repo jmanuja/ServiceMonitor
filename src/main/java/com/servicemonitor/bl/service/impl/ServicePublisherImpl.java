@@ -8,6 +8,7 @@ import javax.swing.SwingWorker;
 /**
  *
  * @author manuja
+ * This Class responsible for Publishing service details.
  */
 public class ServicePublisherImpl implements ServicePublisher{
     private Map<String,Service> serviceList;	

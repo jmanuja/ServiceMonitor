@@ -6,7 +6,6 @@ import com.servicemonitor.bean.MonitorService;
 import com.servicemonitor.bean.Service;
 import com.servicemonitor.bl.service.ImageConfig;
 import com.servicemonitor.bl.service.ServiceStatusRenderer;
-import com.servicemonitor.main.ServiceMonitorMain;
 import java.awt.Component;
 import java.awt.Image;
 import java.text.SimpleDateFormat;
@@ -17,7 +16,7 @@ import javax.swing.ListCellRenderer;
 
 /**
 * @author manuja
-* This Will Render the Service List According to Service Model      *
+* This Will Render the Service status List According to MonitorService Model      *
 */  
 public class ServiceStatusRendererImpl extends JLabel implements ListCellRenderer<MonitorService>,ServiceStatusRenderer,ImageConfig {
     

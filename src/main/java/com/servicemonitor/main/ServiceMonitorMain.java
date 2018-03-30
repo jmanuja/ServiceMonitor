@@ -5,6 +5,7 @@ import com.servicemonitor.bl.service.ServicePublisher;
 import com.servicemonitor.ui.MonitorFrame;
 
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -28,16 +29,13 @@ public class ServiceMonitorMain {
     public static void main(String[] args)
     {
         try {
-            SwingUtilities.invokeLater(new Runnable()
-            {
-                @Override public void run()
-                {   
-                    MonitorFrame window = new MonitorFrame();
-                    window.setVisible(true);
-                    getInstance().initServices();
-                }
+            //Set Jtottoo Theam
+            UIManager.setLookAndFeel("com.jtattoo.plaf.aluminium.AluminiumLookAndFeel");
+            SwingUtilities.invokeLater(() -> {
+                MonitorFrame window = new MonitorFrame();
+                window.setVisible(true);
+                getInstance().initServices();
             });
-            
         } catch (Exception ex) {
              ex.printStackTrace();
         }

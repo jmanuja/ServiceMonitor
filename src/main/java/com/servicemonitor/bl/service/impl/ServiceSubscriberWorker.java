@@ -4,14 +4,8 @@ import com.servicemonitor.enums.StatusEnum;
 import com.servicemonitor.bean.MonitorService;
 import com.servicemonitor.bean.Service;
 import com.servicemonitor.bl.service.ServiceOutageConfig;
-
 import com.servicemonitor.ui.MonitorFrame;
-
-
-import java.io.IOException;
-import java.net.Socket;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.SwingWorker;
@@ -22,9 +16,9 @@ import javax.swing.SwingWorker;
 */  
 public class ServiceSubscriberWorker extends SwingWorker<MonitorService, MonitorService> implements ServiceOutageConfig{
 
-    private DefaultListModel<MonitorService> serviceModel;
-    private MonitorFrame window ;
-    private MonitorService registeredService;
+    private final DefaultListModel<MonitorService> serviceModel;
+    private final MonitorFrame window ;
+    private final MonitorService registeredService;
     private Service service ;
     
     public ServiceSubscriberWorker(MonitorFrame window,MonitorService service)

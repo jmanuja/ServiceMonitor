@@ -41,5 +41,11 @@
 	    <artifactId>spring</artifactId>
 	    <version>2.5.6</version>
 	</dependency>
+        <!-- Jtatoo -->
+        <dependency>
+            <groupId>com.jtattoo</groupId>
+            <artifactId>JTattoo</artifactId>
+            <version>1.6.11</version>
+        </dependency>
   </dependencies>
 </project>

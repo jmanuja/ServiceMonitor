@@ -61,88 +61,81 @@ public class MonitorFrame extends JFrame{
         this.initilizeWindow();
 
         //Service Registering Function
-        registerButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                SwingUtilities.invokeLater(new Runnable() {
-                  public void run() {
-                    try {
-                        String serviceName = serviceNameTextField.getText().trim(); 
-                        Date outageStartTime = (Date) outageStartSpinner.getValue();
-                        Date outageEndTime = (Date) outageEndSpinner.getValue();
-                        if( !"".equals(serviceName)){
-                            if(!registerServiceMap.containsKey(serviceName)){
-                                MonitorService selectedItem = new MonitorService();
-                                selectedItem.setServiceName(serviceName);
-                                if(outageStartTime.compareTo(outageEndTime)!=0 && outageStartTime.before(outageEndTime)){
-                                    selectedItem.setOutageStartTime(outageStartTime);
-                                    selectedItem.setOutageEndTime(outageEndTime);
-                                }
-                                registerServiceMap.put(serviceName, selectedItem);
-                                swingWorker = new ServiceSubscriberWorker(MonitorFrame.this,selectedItem);
-                                swingWorker.execute();
-                                clearWindow();
-                            }else{
-                                showMessage("Service Already Running");
+        registerButton.addActionListener((ActionEvent e) -> {
+            SwingUtilities.invokeLater(() -> {
+                try {
+                    String serviceName = serviceNameTextField.getText().trim();
+                    Date outageStartTime = (Date) outageStartSpinner.getValue();
+                    Date outageEndTime = (Date) outageEndSpinner.getValue();
+                    if( !"".equals(serviceName)){
+                        if(!registerServiceMap.containsKey(serviceName)){
+                            MonitorService selectedItem = new MonitorService();
+                            selectedItem.setServiceName(serviceName);
+                            if(outageStartTime.compareTo(outageEndTime)!=0 && outageStartTime.before(outageEndTime)){
+                                selectedItem.setOutageStartTime(outageStartTime);
+                                selectedItem.setOutageEndTime(outageEndTime);
                             }
+                            registerServiceMap.put(serviceName, selectedItem);
+                            swingWorker = new ServiceSubscriberWorker(MonitorFrame.this,selectedItem);
+                            swingWorker.execute();
+                            clearWindow();
                         }else{
-                            showMessage("Please fill all Mandotory Fields");
+                            showMessage("Service Already Running");
                         }
-                    }catch (Exception e) {
-                        showMessage(e.getMessage());
-                        e.printStackTrace();
+                    }else{
+                        showMessage("Please fill all Mandotory Fields");
                     }
-                  }
-                });
-            }
+                } catch (Exception e1) {
+                    showMessage(e1.getMessage());
+                    e1.printStackTrace();
+                }
+            });
         });
         
         //Service Terminate Function
-        terminateButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                SwingUtilities.invokeLater(new Runnable() {
-                  public void run() {
-                    try {
-                        String serviceName = serviceNameTextField.getText().trim(); 
-                        if( !"".equals(serviceName)){
-                            if(checkServiceIsRunning(serviceName)){
-                                registerServiceMap.remove(serviceName);
-                                swingWorker.cancel(true);
-                                serviceStatusModel.removeElement(serviceStatusList.getSelectedValue());
-                                statusMap.remove(serviceName);
-                                clearWindow();
-                            }else{
-                                showMessage("Service Not Running");
-                            }
+        terminateButton.addActionListener((ActionEvent e) -> {
+            SwingUtilities.invokeLater(() -> {
+                try {
+                    String serviceName = serviceNameTextField.getText().trim();
+                    if( !"".equals(serviceName)){
+                        if(checkServiceIsRunning(serviceName)){
+                            registerServiceMap.remove(serviceName);
+                            swingWorker.cancel(true);
+                            serviceStatusModel.removeElement(serviceStatusList.getSelectedValue());
+                            statusMap.remove(serviceName);
+                            clearWindow();
                         }else{
-                            showMessage("Please Select a Service");
+                            showMessage("Service Not Running");
                         }
-                    }catch (Exception e) {
-                        showMessage(e.getMessage());
-                        e.printStackTrace();
+                    }else{
+                        showMessage("Please Select a Service");
                     }
-                  }
-                });
-            }
+                } catch (Exception e1) {
+                    showMessage(e1.getMessage());
+                    e1.printStackTrace();
+                }
+            });
         });
         
         //Service Select Function 
         //Trigger Event : Mouse Click Event on the Service from the Running List
         MouseListener mouseListener = new MouseAdapter() {
+            @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 1) {
-                    SwingUtilities.invokeLater(new Runnable() {
-                        public void run() {
-                            MonitorService service = serviceStatusList.getSelectedValue();			
-                            serviceNameTextField.setText(service.getServiceName()); 
+                    SwingUtilities.invokeLater(() -> {
+                        if(serviceStatusList.getSelectedValue()!=null){
+                            MonitorService service = serviceStatusList.getSelectedValue();
+                            serviceNameTextField.setText(service.getServiceName());
                             if(service.getOutageStartTime()!=null && service.getOutageEndTime()!=null){
                                 outageStartSpinner.setValue(service.getOutageStartTime());
-                                outageEndSpinner.setValue(service.getOutageEndTime());                                    
+                                outageEndSpinner.setValue(service.getOutageEndTime());
                             }else{
                                 Calendar cal = Calendar.getInstance();
                                 cal.set(Calendar.HOUR_OF_DAY, 0);
                                 cal.set(Calendar.MINUTE, 0);
                                 outageStartSpinner.setValue(cal.getTime());
-                                outageEndSpinner.setValue(cal.getTime());     
+                                outageEndSpinner.setValue(cal.getTime());
                             }
                         }
                     });
@@ -151,7 +144,7 @@ public class MonitorFrame extends JFrame{
         };
         serviceStatusList.addMouseListener(mouseListener);
         
-        this.setSize(350, 620);
+        this.setSize(350, 420);
         this.setResizable(false);
         Container contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout());
@@ -179,7 +172,7 @@ public class MonitorFrame extends JFrame{
         serviceStatusList.setFixedCellHeight(40);
         serviceStatusList.setFixedCellWidth(340);
         jScrollPane = new JScrollPane(serviceStatusList);
-        jScrollPane.setPreferredSize(new Dimension(340, 340));
+        jScrollPane.setPreferredSize(new Dimension(340, 240));
         serviceStatusPanel.add(jScrollPane);
         serviceStatusList.setCellRenderer(new ServiceStatusRendererImpl());        
         
@@ -188,9 +181,9 @@ public class MonitorFrame extends JFrame{
         title.setHorizontalAlignment(JTextField.CENTER);
         title.setPreferredSize(new Dimension(350, 50));
 
-        serviceDetailPanel.setPreferredSize(new Dimension(350, 270));
-        serviceStatusPanel.setBackground(Color.BLUE);
-        serviceStatusPanel.setPreferredSize(new Dimension(350,350));
+        serviceDetailPanel.setPreferredSize(new Dimension(350, 170));
+        serviceStatusPanel.setBackground(Color.GRAY);
+        serviceStatusPanel.setPreferredSize(new Dimension(350,250));
 
         JLabel serviceNameLabel = new JLabel("<html> Service Name <font color='red'>( * )</font></html>");
         serviceNameLabel.setPreferredSize(new Dimension(170,20));

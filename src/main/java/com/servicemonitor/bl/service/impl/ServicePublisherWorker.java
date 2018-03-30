@@ -12,11 +12,11 @@ import javax.swing.SwingWorker;
 
 /**
 * @author manuja
-* This Will do the Background Work and update the window
+* This Will do the service details publishing in background thread 
 */  
 public class ServicePublisherWorker extends SwingWorker<Service, Service> implements ServiceConfig{
 
-    private Service service;
+    private final Service service;
     private Socket socket;	
     
     public ServicePublisherWorker(Service service)
