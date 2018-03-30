@@ -35,7 +35,6 @@ public class ServicePublisherWorker extends SwingWorker<Service, Service> implem
                     if(service.getServiceStatus() == StatusEnum.DOWN.getId()){
                         Thread.sleep(service.getGracePeriod());
                     }
-                    System.out.println(service.getServiceName()+" IS "+ status.getStatus() + new Date());
                 }
             }
         } catch (InterruptedException e){

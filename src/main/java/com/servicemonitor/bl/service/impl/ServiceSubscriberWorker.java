@@ -43,7 +43,6 @@ public class ServiceSubscriberWorker extends SwingWorker<MonitorService, Monitor
                     registeredService.setServiceStatus(status);
                     publish(registeredService);
                     Thread.sleep(service.getPollingFrequency());
-                    System.out.println(registeredService.getServiceName()+" IS "+ status);
                 }else{
                     window.showMessage("Service Not Found");
                     cancel(true);

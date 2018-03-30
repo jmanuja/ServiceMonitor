@@ -185,7 +185,7 @@ public class MonitorFrame extends JFrame{
         serviceStatusPanel.setBackground(Color.GRAY);
         serviceStatusPanel.setPreferredSize(new Dimension(350,250));
 
-        JLabel serviceNameLabel = new JLabel("<html> Service Name <font color='red'>( * )</font></html>");
+        JLabel serviceNameLabel = new JLabel("<html> Service Name <font color='red'> * </font></html>");
         serviceNameLabel.setPreferredSize(new Dimension(170,20));
         JLabel outageStartLabel= new JLabel("Outage Start Time");
         outageStartLabel.setPreferredSize(new Dimension(170,20));

@@ -21,7 +21,7 @@
     </bean>
     <bean id="google" class="com.servicemonitor.bean.Service">
         <property name="host" 			value="www.google.com"></property>
-        <property name="port" 			value="8888"></property>
+        <property name="port" 			value="80"></property>
         <property name="serviceName" 		value="GOOGLE"></property>
         <property name="serviceStatus" 		value="5"></property>
         <property name="pollingFrequency" 	value="2000"></property>
