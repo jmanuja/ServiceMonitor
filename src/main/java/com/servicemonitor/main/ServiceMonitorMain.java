@@ -31,6 +31,7 @@ public class ServiceMonitorMain {
         try {
             //Set Jtottoo Theam
             UIManager.setLookAndFeel("com.jtattoo.plaf.aluminium.AluminiumLookAndFeel");
+            
             SwingUtilities.invokeLater(() -> {
                 MonitorFrame window = new MonitorFrame();
                 window.setVisible(true);

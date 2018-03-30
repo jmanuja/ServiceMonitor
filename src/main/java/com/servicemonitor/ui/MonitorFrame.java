@@ -163,7 +163,7 @@ public class MonitorFrame extends JFrame{
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
         
-        serviceDetailPanel = new JPanel(new FlowLayout());
+        serviceDetailPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         serviceStatusPanel = new JPanel(new FlowLayout(FlowLayout.LEFT)); 
         jScrollPane = new JScrollPane();
         
@@ -220,12 +220,12 @@ public class MonitorFrame extends JFrame{
         serviceDetailPanel.add(outageEndSpinner);
         
         registerButton = new JButton("Register");
-        registerButton.setPreferredSize( new Dimension(100, 30));
-        registerButton.setLayout(new FlowLayout(FlowLayout.LEFT)); 
+        registerButton.setPreferredSize( new Dimension(80, 26));
+        registerButton.setLayout(new FlowLayout(FlowLayout.RIGHT)); 
         serviceDetailPanel.add(registerButton);
 
         terminateButton = new JButton("Stop");
-        terminateButton.setPreferredSize( new Dimension(100, 30));
+        terminateButton.setPreferredSize( new Dimension(80, 26));
         terminateButton.setLayout(new FlowLayout(FlowLayout.RIGHT)); 
         serviceDetailPanel.add(terminateButton);
 
